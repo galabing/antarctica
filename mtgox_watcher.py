@@ -6,8 +6,8 @@ from utils import convert_amount, convert_price
 from watcher import Watcher
 
 class MtGoxWatcher(Watcher):
-  def __init__(self, refresh_time_sec, timeout_sec):
-    super(MtGoxWatcher, self).__init__('MtGox', refresh_time_sec, timeout_sec)
+  def __init__(self, override_refresh_time_sec=None):
+    super(MtGoxWatcher, self).__init__('MtGox', override_refresh_time_sec)
     self.url = 'http://data.mtgox.com/api/2/BTCUSD/money/depth'
 
   def _update_order_book_from_json(self, json_data):

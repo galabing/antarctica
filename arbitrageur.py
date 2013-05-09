@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
 import argparse
+import config
 import logging
 from arbitrage_detector import ArbitrageDetector
+from bad_watcher import BadWatcher
 from bitstamp_watcher import BitstampWatcher
 from btce_watcher import BTCEWatcher
 from campbx_watcher import CampBXWatcher
@@ -12,28 +14,26 @@ from os import environ
 from time import sleep, tzset
 
 class Arbitrageur(object):
-  def __init__(self, refresh_time_sec, timeout_sec, marginal_profit_rate,
-               debug_watchers=False):
-    self.refresh_time_sec = refresh_time_sec
-    self.timeout_sec = timeout_sec
-    self.marginal_profit_rate = marginal_profit_rate
-    self.debug_watchers = debug_watchers
+  def __init__(self):
+    pass
 
   def run(self):
-    # TODO: Adjust per-market refresh rate according to market activity
-    #       and throttle limit.
-    self.market_watchers = [
-        BitstampWatcher(self.refresh_time_sec, self.timeout_sec),
-        BTCEWatcher(self.refresh_time_sec, self.timeout_sec),
-        CampBXWatcher(self.refresh_time_sec, self.timeout_sec),
-        MtGoxWatcher(self.refresh_time_sec, self.timeout_sec)]
-    if self.debug_watchers:
-      from bad_watcher import BadWatcher
-      self.market_watchers.append(BadWatcher())
+    self._init_market_watchers()
     self.thread_pool = ThreadPoolExecutor(
         max_workers=len(self.market_watchers))
-    self.arbitrage_detector = ArbitrageDetector(self.marginal_profit_rate)
+    self.arbitrage_detector = ArbitrageDetector(
+        config.marginal_profit_rate_normal)
     self._loop()
+
+  def _init_market_watchers(self):
+    ctor_dict = {
+        'bad': BadWatcher,
+        'bitstamp': BitstampWatcher,
+        'btce': BTCEWatcher,
+        'campbx': CampBXWatcher,
+        'mtgox': MtGoxWatcher
+    }
+    self.market_watchers = [ctor_dict[market]() for market in config.markets]
 
   def _loop(self):
     while True:
@@ -69,17 +69,11 @@ class Arbitrageur(object):
                      ' pay=%.2f paid=%.2f profit=%.2f rate=%.2f%% mrate=%.2f%%'
                      % (buy_price, sell_price, buy_market, sell_market, amount,
                         pay, paid, profit, rate, marginal_rate))
-      # TODO: This is for the convenience of debugging.
-      sleep(20)
+      sleep(config.sleep_between_rounds_sec)
 
 def main():
   parser = argparse.ArgumentParser()
-  # TODO: Adjust default settings.
-  parser.add_argument('--refresh_time_sec', type=int, default=0)
-  parser.add_argument('--timeout_sec', type=int, default=20)
-  parser.add_argument('--marginal_profit_rate', type=float, default=0)
   parser.add_argument('--verbose', action='store_true')
-  parser.add_argument('--debug_watchers', action='store_true')
   args = parser.parse_args()
   environ['TZ'] = 'US/Pacific'
   tzset()
@@ -88,10 +82,7 @@ def main():
     level = logging.DEBUG
   logging.basicConfig(format='[%(levelname)s] %(asctime)s %(message)s',
                       level=level)
-  arbitrageur = Arbitrageur(args.refresh_time_sec,
-                            args.timeout_sec,
-                            args.marginal_profit_rate,
-                            debug_watchers=args.debug_watchers)
+  arbitrageur = Arbitrageur()
   arbitrageur.run()
 
 if __name__ == '__main__':

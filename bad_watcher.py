@@ -9,7 +9,8 @@ import logging
 from watcher import Watcher
 
 class BadWatcher(Watcher):
-  def __init__(self):
+  # refresh_time_sec and timeout_sec are ignored.
+  def __init__(self, refresh_time_sec, timeout_sec):
     super(BadWatcher, self).__init__('Bad', 0, 0)
 
   def _refresh_order_book(self):

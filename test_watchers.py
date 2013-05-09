@@ -8,19 +8,22 @@ from utils import validate_order_book
 class TestWatchers(unittest.TestCase):
   def setUp(self):
     self.refresh_time_sec = 20
-    self.timeout_sec = 20
 
   def test_bitstamp_watcher(self):
-    self._test_watcher(BitstampWatcher(self.refresh_time_sec, self.timeout_sec))
+    self._test_watcher(BitstampWatcher(
+        override_refresh_time_sec=self.refresh_time_sec))
 
   def test_btce_watcher(self):
-    self._test_watcher(BTCEWatcher(self.refresh_time_sec, self.timeout_sec))
+    self._test_watcher(BTCEWatcher(
+        override_refresh_time_sec=self.refresh_time_sec))
 
   def test_campbx_watcher(self):
-    self._test_watcher(CampBXWatcher(self.refresh_time_sec, self.timeout_sec))
+    self._test_watcher(CampBXWatcher(
+        override_refresh_time_sec=self.refresh_time_sec))
 
   def test_mtgox_watcher(self):
-    self._test_watcher(MtGoxWatcher(self.refresh_time_sec, self.timeout_sec))
+    self._test_watcher(MtGoxWatcher(
+        override_refresh_time_sec=self.refresh_time_sec))
 
   def _test_watcher(self, watcher):
     """ Tests a market watcher: Checks its preconditions, fetches an order book,
