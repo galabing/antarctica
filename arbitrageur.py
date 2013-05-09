@@ -66,7 +66,8 @@ class Arbitrageur(object):
         marginal_rate = 100 * (opportunity.min_sell_price -
                          opportunity.max_buy_price) / opportunity.max_buy_price
         logging.info('Opportunity: buy=%.2f sell=%.2f from=%s to=%s amount=%.8f'
-                     ' pay=%.2f paid=%.2f profit=%.2f rate=%.2f%% mrate=%.2f%%'                     % (buy_price, sell_price, buy_market, sell_market, amount,
+                     ' pay=%.2f paid=%.2f profit=%.2f rate=%.2f%% mrate=%.2f%%'
+                     % (buy_price, sell_price, buy_market, sell_market, amount,
                         pay, paid, profit, rate, marginal_rate))
       # TODO: This is for the convenience of debugging.
       sleep(20)
