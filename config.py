@@ -7,9 +7,10 @@ markets = ('bitstamp', 'btce', 'campbx', 'mtgox')
 # The main thread sleeps for a while between rounds.
 # TODO: Adjust this value by the throttle limit of the exchanges.
 sleep_between_rounds_sec = 20
-# This is to prevent the market watchers from being throttled.  Set it to 0
-# (always refresh) if the main thread already sleeps long enough between
-# rounds.
+# This is to prevent the market watchers from being throttled by setting
+# an expiration time for an order book and reusing it before the deadline.
+# Set it to 0 (always refresh) if the main thread already sleeps long enough
+# between rounds.
 refresh_time_sec = 0
 # The timeout of the API operations.
 timeout_sec = 20
@@ -37,7 +38,7 @@ mtgox_rate = 0.6/100
 # for this is because cash and bitcoins cannot be instantly transferred
 # among exchanges, so the system must rebalance itself in the arbitrage
 # transactions.  Initially, all the participating exchanges have about
-# 50/50 cash and bitcoins, and 'marginal_Profit_rate_normal' is used as the
+# 50/50 cash and bitcoins, and 'marginal_profit_rate_normal' is used as the
 # threshold for arbitrage transactions.  If an exchange becomes short on
 # cash (defined by 'asset_ratio_low'), then it will use
 # 'marginal_profit_rate_high' as the threshold for buying in this market, and
