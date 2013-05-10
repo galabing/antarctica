@@ -15,7 +15,7 @@ def _pal(p, a):
 
 class TestArbitrageDetector(unittest.TestCase):
   def setUp(self):
-    self.detector = ArbitrageDetector(0)
+    self.detector = ArbitrageDetector(fixed_marginal_profit_rate=0)
 
   def test_has_matching_orders(self):
     self.assertFalse(self.detector.has_matching_orders(
@@ -92,7 +92,7 @@ class TestArbitrageDetector(unittest.TestCase):
         self.detector.process_pair('BuyMarket', 'SellMarket', asks, bids))
 
   def test_process_pair_high_margin(self):
-    detector = ArbitrageDetector(0.3)
+    detector = ArbitrageDetector(fixed_marginal_profit_rate=0.3)
     # This is the same input as the last case in test_process_pair(),
     # except that now the marginal profit rate is 0.3, and the last
     # bitcoin from buying at 4 and selling at 5 does not qualify any more

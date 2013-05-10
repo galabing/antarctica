@@ -60,3 +60,8 @@ marginal_profit_rate_high = 4.0/100
 #       Ie, mapping an asset ratio to the buying and selling rates.
 asset_ratio_low = 0.25
 
+# Sometimes the order book fetched from an exchange contains matching orders
+# (min ask price <= max bid price).  This may be due to server lags.
+# For safety, turn on this flag to skip such order books in the arbitrage.
+skip_order_books_with_matching_orders = True
+

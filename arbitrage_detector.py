@@ -4,6 +4,7 @@ It takes order books from different markets, and detects buy-low-sell-high
 opportunities among them.
 """
 
+import config
 import logging
 
 class ArbitrageOpportunity(object):
@@ -38,24 +39,8 @@ class ArbitrageOpportunity(object):
     return '%s' % self.__dict__
 
 class ArbitrageDetector(object):
-  def __init__(self, marginal_profit_rate, ignore_matching_orders=False):
-    """
-    Args:
-      marginal_profit_rate: The profit rate ((sell - buy) / buy) beyond which
-                            trading volume can be increased.
-      ignore_matching_orders: If True, matching orders within each order book
-                              are ignored and the corresponding order books are
-                              considered valid.  Otherwise, the order books with
-                              matching orders are considered invalid and are not
-                              used for detecting arbitrage opportunities.
-
-    TODO: Run with prematch_order_books=True and log how often order books
-          have matching orders, and find out if they are due to processing
-          lags or special order rules (eg, AON orders).
-    """
-    assert marginal_profit_rate >= 0
-    self.marginal_profit_rate = marginal_profit_rate
-    self.ignore_matching_orders = ignore_matching_orders
+  def __init__(self, fixed_marginal_profit_rate=None):
+    self.fixed_marginal_profit_rate = fixed_marginal_profit_rate
 
   def process(self, order_books):
     """
@@ -66,7 +51,7 @@ class ArbitrageDetector(object):
                    properly ordered etc).
     Returns: A list of arbitrage opportunities.
     """
-    if not self.ignore_matching_orders:
+    if not config.skip_order_books_with_matching_orders:
       order_books = [(item[0], item[1]) for item in order_books
           if not self.has_matching_orders(item[0], item[1])]
     logging.info('Processing %d order books' % len(order_books))
@@ -115,13 +100,17 @@ class ArbitrageDetector(object):
       return None
     # Walk down both lists and increase the trading volume as long as the
     # marginal profit rate is satisfied.
+    marginal_profit_rate = config.marginal_profit_rate_normal
+    # Override for testing.
+    if self.fixed_marginal_profit_rate is not None:
+      marginal_profit_rate = self.fixed_marginal_profit_rate
     i, j = 0, 0
     buys, sells = [], []
     while True:
       if i >= len(good_asks) or j >= len(good_bids):
         break
       profit_rate = (good_bids[j][0] - good_asks[i][0]) / good_asks[i][0]
-      if profit_rate <= self.marginal_profit_rate:
+      if profit_rate <= marginal_profit_rate:
         break
       if good_asks[i][1] < good_bids[j][1]:
         buys.append((good_asks[i][0], good_asks[i][1]))
