@@ -47,9 +47,9 @@ mtgox_rate = 0.6/100
 # short on bitcoin (also defined by 'asset_ratio_low', it will use
 # 'marginal_profit_rate_low' for buying and 'marginal_profit_rate_high' for
 # selling.
-marginal_profit_rate_low = 2.0/100
-marginal_profit_rate_normal = 3.0/100
-marginal_profit_rate_high = 4.0/100
+marginal_profit_rate_low = 1.0/100
+marginal_profit_rate_normal = 2.0/100
+marginal_profit_rate_high = 3.0/100
 
 # The dollar value of the minority asset divided by the dollar value of the
 # majority asset in an exchange.
