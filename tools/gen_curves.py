@@ -86,6 +86,8 @@ def process(log_file, html_file):
       print >> fp, line
     print >> fp, '  </body>'
     print >> fp, '</html>'
+  for key in sorted(curves.keys()):
+    print '%s - %d transactions' % (key, len(curves[key]))
 
 def main():
   parser = argparse.ArgumentParser()
