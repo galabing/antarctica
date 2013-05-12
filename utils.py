@@ -1,16 +1,17 @@
 """ Utility functions for the arbitrageur program.
 """
 
+import config
 import json
 import logging
 from socket import timeout
 from urllib.request import URLError, urlopen
 
-def read_json(url, timeout_sec):
+def read_json(url):
   """ Opens URL and returns the parsed json object, or None if failed.
   """
   try:
-    text = urlopen(url, None, timeout_sec).read().decode('utf8')
+    text = urlopen(url, None, config.timeout_sec).read().decode('utf8')
   except URLError:
     logging.error('Failed to open url: %s' % url)
     return None
@@ -32,7 +33,7 @@ def read_json(url, timeout_sec):
 
 def _convert_value(value, identifier, multiplier):
   try:
-    return int(float(value) * multiplier)
+    return int(round(float(value) * multiplier, 0))
   except ValueError:
     logging.error('ValueError in converting %s: %s' % (identifier, value))
     return None

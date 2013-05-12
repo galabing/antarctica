@@ -1,18 +1,13 @@
 """ General configuration for the arbitrageur.
 """
 
-# The participating markets.
-markets = ('bitstamp', 'btce', 'campbx', 'mtgox')
+# The participating exchanges.
+exchanges = ('bitstamp', 'btce', 'campbx', 'mtgox')
 
 # The main thread sleeps for a while between rounds.
 # TODO: Adjust this value by the throttle limit of the exchanges.
 sleep_between_rounds_sec = 20
-# This is to prevent the market watchers from being throttled by setting
-# an expiration time for an order book and reusing it before the deadline.
-# Set it to 0 (always refresh) if the main thread already sleeps long enough
-# between rounds.
-refresh_time_sec = 0
-# The timeout of the API operations.
+# The timeout for the API operations.
 timeout_sec = 20
 
 # Commissions, as a rate of the trading volume.  Volume discounts are not

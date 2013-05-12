@@ -4,46 +4,18 @@ import argparse
 import config
 import logging
 from arbitrage_detector import ArbitrageDetector
-from bad_watcher import BadWatcher
-from bitstamp_watcher import BitstampWatcher
-from btce_watcher import BTCEWatcher
-from campbx_watcher import CampBXWatcher
-from concurrent.futures import ThreadPoolExecutor, wait
-from mtgox_watcher import MtGoxWatcher
+from market_watcher import MarketWatcher
 from os import environ
 from time import sleep, tzset
 
 class Arbitrageur(object):
   def __init__(self):
-    pass
+    self.market_watcher = MarketWatcher()
+    self.arbitrage_detector = ArbitrageDetector()
 
   def run(self):
-    self._init_market_watchers()
-    self.thread_pool = ThreadPoolExecutor(
-        max_workers=len(self.market_watchers))
-    self.arbitrage_detector = ArbitrageDetector()
-    self._loop()
-
-  def _init_market_watchers(self):
-    ctor_dict = {
-        'bad': BadWatcher,
-        'bitstamp': BitstampWatcher,
-        'btce': BTCEWatcher,
-        'campbx': CampBXWatcher,
-        'mtgox': MtGoxWatcher
-    }
-    self.market_watchers = [ctor_dict[market]() for market in config.markets]
-
-  def _loop(self):
     while True:
-      requests = [(watcher.market_name,
-                   self.thread_pool.submit(watcher.get_order_book))
-                  for watcher in self.market_watchers]
-      logging.info('Waiting on %d requests' % len(requests))
-      wait([request[1] for request in requests])
-      order_books = [(request[0], request[1].result())
-                     for request in requests
-                     if request[1].result() is not None]
+      order_books = self.market_watcher.get_order_books()
       logging.info('Received %d order books' % len(order_books))
       opportunities = self.arbitrage_detector.process(order_books)
       logging.info('Detected %d opportunities' % len(opportunities))

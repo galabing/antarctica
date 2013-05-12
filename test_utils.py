@@ -6,13 +6,15 @@ def _pa(p, a):
 
 class TestUtils(unittest.TestCase):
   def test_read_json_fails_nicely(self):
-    self.assertIsNone(read_json('https://www.google.com/', 2))
-    self.assertIsNone(read_json('http://hopefullyneverarealurl.com/', 2))
+    self.assertIsNone(read_json('https://www.google.com/'))
+    self.assertIsNone(read_json('http://hopefullyneverarealurl.com/'))
 
   def test_convert_price(self):
     self.assertEqual(9800, convert_price(98))
     self.assertEqual(9800, convert_price(98.0))
     self.assertEqual(9800, convert_price('98.0'))
+    self.assertEqual(9800, convert_price(98.004))
+    self.assertEqual(9801, convert_price(98.006))
     self.assertIsNone(convert_price('$98'))
 
   def test_convert_amount(self):
