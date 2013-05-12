@@ -1,10 +1,10 @@
 """ Market watcher for BTC-E.
 """
 
+from exchange_watcher import ExchangeWatcher
 from utils import create_price_amount_list
-from watcher import Watcher
 
-class BTCEWatcher(Watcher):
+class BTCEWatcher(ExchangeWatcher):
   def __init__(self):
     super(BTCEWatcher, self).__init__('BTC-E')
     self.url = 'https://btc-e.com/api/2/btc_usd/depth'

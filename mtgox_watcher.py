@@ -1,11 +1,11 @@
 """ Market watcher for MtGox.
 """
 
+from exchange_watcher import ExchangeWatcher
 import logging
 from utils import convert_amount, convert_price
-from watcher import Watcher
 
-class MtGoxWatcher(Watcher):
+class MtGoxWatcher(ExchangeWatcher):
   def __init__(self):
     super(MtGoxWatcher, self).__init__('MtGox')
     self.url = 'http://data.mtgox.com/api/2/BTCUSD/money/depth'

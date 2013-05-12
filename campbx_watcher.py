@@ -1,10 +1,10 @@
 """ Market watcher for CampBX.
 """
 
+from exchange_watcher import ExchangeWatcher
 from utils import create_price_amount_list
-from watcher import Watcher
 
-class CampBXWatcher(Watcher):
+class CampBXWatcher(ExchangeWatcher):
   def __init__(self):
     super(CampBXWatcher, self).__init__('CampBX')
     self.url = 'http://campbx.com/api/xdepth.php'

@@ -1,10 +1,10 @@
 """ Market watcher for Bitstamp.
 """
 
+from exchange_watcher import ExchangeWatcher
 from utils import create_price_amount_list
-from watcher import Watcher
 
-class BitstampWatcher(Watcher):
+class BitstampWatcher(ExchangeWatcher):
   def __init__(self):
     super(BitstampWatcher, self).__init__('Bitstamp')
     self.url = 'https://www.bitstamp.net/api/order_book/'

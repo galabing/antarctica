@@ -3,7 +3,6 @@
 
 import config
 import logging
-from bad_watcher import BadWatcher
 from bitstamp_watcher import BitstampWatcher
 from btce_watcher import BTCEWatcher
 from campbx_watcher import CampBXWatcher
@@ -15,7 +14,6 @@ class MarketWatcher(object):
     """ Init a list of exchange watchers from the config file.
     """
     watcher_dict = {
-        'bad': BadWatcher,
         'bitstamp': BitstampWatcher,
         'btce': BTCEWatcher,
         'campbx': CampBXWatcher,
